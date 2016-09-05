@@ -6,24 +6,23 @@ DuckieTV.directive('actionBar', function() {
         controller: ["$rootScope", "$state", "$filter", "SeriesListState", "SidePanelState", "DuckieTorrent",
             function($rootScope, $state, $filter, SeriesListState, SidePanelState, DuckieTorrent) {
                 if (navigator.userAgent.toLowerCase().indexOf('standalone') !== -1) {
-                    var win = require('nw.gui').Window.get();
                     // listen for standalone menu go-to events
-                    win.on('standalone.calendar', function() {
+                    $rootScope.$on('standalone.calendar', function() {
                         $state.go('calendar');
                         SeriesListState.hide();
                     });
-                    win.on('standalone.favorites', function() {
+                    $rootScope.$on('standalone.favorites', function() {
                         SidePanelState.hide();
                         SeriesListState.show();
                         $state.go('favorites');
                     });
-                    win.on('standalone.adlstatus', function() {
+                    $rootScope.$on('standalone.adlstatus', function() {
                         $state.go('autodlstatus');
                     });
-                    win.on('standalone.settings', function() {
+                    $rootScope.$on('standalone.settings', function() {
                         $state.go('settings');
                     });
-                    win.on('standalone.about', function() {
+                    $rootScope.$on('standalone.about', function() {
                         $state.go('about');
                     });
                 }

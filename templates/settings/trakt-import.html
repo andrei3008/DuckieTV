@@ -6,29 +6,26 @@
       <p translate-once="SETTINGS/TRAKT-IMPORT/sync/desc"></p>
       <p><strong  translate-once="COMMON/current-setting/hdr"></strong>
        {{traktSync ? 'COMMON/enabled/lbl' : 'COMMON/disabled/lbl'|translate}}</p>
-      <form name="userCredentials">
-        <table>
-          <tr class="username">
-            <td translate-once="SETTINGS/TRAKT-IMPORT/username/hdr"></td>
+        <table style="width: 100%">
+          <tr ng-if="!credentials.success">
             <td>
-              <input type='text' style='background-color: rgba(0,0,0,0.8);' name='username' ng-model='credentials.username' placeholder="Trakt.TV {{'COMMON/username/lbl'|translate}}" ng-disabled="credentials.success" ng-keyup="$event.keyCode == 13 && onAuthorizeEnter()" />
+              <a ng-href="{{getPinUrl()}}" ng-click="getPin()" class="btn btn-success" target='_blank' translate-once="SETTINGS/TRAKT-IMPORT/authorize/btn"></a>
             </td>
           </tr>
-          <tr>
-            <td></td>
-            <td>
-              <a ng-href="{{getPinUrl()}}" ng-click="getPin()" ng-disabled="credentials.username == ''" ng-hide="credentials.success" class="btn btn-success" target='_blank' translate-once="SETTINGS/TRAKT-IMPORT/authorize/btn"></a>
-            </td>
-          </tr>
-          <tr class="password">
+          <tr style="text-align: center" ng-if="!credentials.success">
             <td translate-once="SETTINGS/TRAKT-IMPORT/password/hdr"></td>
+          </tr>
+          <tr class="password" ng-if="!credentials.success">
             <td>
-              <input type='password' style='background-color: rgba(0,0,0,0.8);' name='password' ng-model='credentials.pincode' placeholder="Trakt.TV PIN" ng-disabled="credentials.success || !credentials.getpin" ng-keyup="$event.keyCode == 13 && onLoginEnter()" />
+              <input type='password' style="width: 100%" ng-model='credentials.pincode' placeholder="Trakt.TV PIN" ng-disabled="!credentials.getpin" ng-keyup="$event.keyCode == 13 && onLoginEnter()" />
             </td>
           </tr>
           <tr class="button">
-            <td></td>
-            <td><center>
+            <td>
+              <p class="alert alert-success" role="alert" ng-show="credentials.success" style="white-space: normal; word-break:break-all">
+                <strong>TraktTV <span translate-once="SETTINGS/TRAKT-IMPORT/authorized/alert"></span></strong>
+                Token: {{credentials.success}}
+              </p>
               <a ng-click="authorize(credentials.pincode)" class="btn btn-success" style="position:relative" ng-disabled="credentials.success || !credentials.getpin" ng-show="!credentials.success">
                 <i class="glyphicon glyphicon-log-in" style="float:left;top:3px"></i><span translate-once="SETTINGS/TRAKT-IMPORT/login-to/btn"></span><span>Trakt.TV</span>
                 <loading-spinner ng-show="credentials.authorizing" style="width:20px;height:20px;position:absolute;right:5px"></loading-spinner>
@@ -36,18 +33,13 @@
 
               <a ng-click="clearCredentials()" ng-if="credentials.success" class="btn btn-danger">
                 <i class="glyphicon glyphicon-trash" style="float:left;top:3px"></i><span translate-once="SETTINGS/TRAKT-IMPORT/clear-credentials/btn"></span>
-              </a></center>
+              </a>
               <a ng-click="renewCredentials()" ng-if="credentials.success" class="btn btn-success">
                 <i class="glyphicon glyphicon-refresh" style="float:left;top:3px"></i><span translate-once="SETTINGS/TRAKT-IMPORT/renew-credentials/btn"></span>
-              </a></center>
+              </a>
             </td>
           </tr>
         </table>
-      </form>
-      <p class="alert alert-success" role="alert" ng-show="credentials.success" style="margin-top:5px;white-space:normal;word-break:break-all;">
-        <strong>TraktTV <span translate-once="SETTINGS/TRAKT-IMPORT/authorized/alert"></span></strong>
-        Token: {{credentials.success}}
-      </p>
       <p class="alert alert-danger" role="alert" ng-show="credentials.error != false" style="margin-top:5px;white-space:normal">{{credentials.error}}</p>
     </div>
   </div>
@@ -90,7 +82,7 @@
     </div>
   </div>
   <div class="miniposter x2" ng-if="traktTVSeries[0]" style="text-align:center">
-    <serieheader style='display:inline-block; margin:5px;' data="serie" no-overview="1" no-title="1" mode="poster" ng-repeat="serie in traktTVSeries">
+    <serieheader style='display:inline-block; margin:5px;' data="serie" no-badge="1" no-button="1" no-overview="1" no-title="1" mode="poster" ng-repeat="serie in traktTVSeries">
       <em class="earmark" ng-show="isAdded(serie.tvdb_id)"><i class='glyphicon glyphicon-ok'></i></em>
       <em class="earmark adding" ng-show="isAdding(serie.tvdb_id)"><loading-spinner></loading-spinner></em>
     </serieheader>

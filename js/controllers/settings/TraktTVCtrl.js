@@ -3,7 +3,6 @@
  */
 DuckieTV.controller('TraktTVCtrl', ["$rootScope", "$injector", "TraktTVv2", "FavoritesService", "SettingsService",
     function($rootScope, $injector, TraktTVv2, FavoritesService, SettingsService) {
-
         var vm = this;
 
         // Array for credentials
@@ -102,7 +101,7 @@ DuckieTV.controller('TraktTVCtrl', ["$rootScope", "$injector", "TraktTVv2", "Fav
             FavoritesService.getSeries().then(function(series) {
                 console.info("Mapping currently added series");
                 series.map(function(serie) {
-                    localSeries[serie.TVDB_ID] = serie;
+                    localSeries[serie.TRAKT_ID] = serie;
                 });
             }).then(TraktTVv2.userShows().then(function(userShows) {
                 console.info("Found", userShows.length, "shows in users collection");
@@ -186,10 +185,10 @@ DuckieTV.controller('TraktTVCtrl', ["$rootScope", "$injector", "TraktTVv2", "Fav
                             })).then(function() {
                                 console.info("Successfully marked all episodes as watched");
                                 setTimeout(function() {
-                                    console.info("Firing series:recount:watched")
+                                    console.info("Firing series:recount:watched");
                                     $rootScope.$broadcast('series:recount:watched');
                                 }, 7000);
-                            })
+                            });
                         });
                     });
                 });
@@ -198,7 +197,6 @@ DuckieTV.controller('TraktTVCtrl', ["$rootScope", "$injector", "TraktTVv2", "Fav
 
         // Push current series and watched episodes to TraktTV
         vm.pushToTraktTV = function() {
-
             FavoritesService.favorites.map(function(serie) {
                 console.info("Adding series %s to Trakt.TV user's collection.", serie.name);
                 TraktTVv2.addToCollection(serie.TVDB_ID);
@@ -218,6 +216,7 @@ DuckieTV.controller('TraktTVCtrl', ["$rootScope", "$injector", "TraktTVv2", "Fav
             vm.traktSync = !vm.traktSync;
             SettingsService.set('trakttv.sync', vm.traktSync);
         };
+
         /**
          * Changes the hourly period DuckieTV fetches Trakt.TV episodes updates with.
          */
